@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum EstadoResposta { normal, correta, errada }
+enum EstadoResposta { normal, selecionada, correta, errada }
 
 class Resposta extends StatelessWidget {
   final String texto;
@@ -37,6 +37,11 @@ class Resposta extends StatelessWidget {
         borderColor = Colors.redAccent;
         textColor = Colors.white70;
         circleBg = Colors.red.withValues(alpha: 0.4);
+      case EstadoResposta.selecionada:
+        bgColor = Colors.white.withValues(alpha: 0.3);
+        borderColor = Colors.white;
+        textColor = Colors.white;
+        circleBg = Colors.white.withValues(alpha: 0.4);
       case EstadoResposta.normal:
         bgColor = Colors.white.withValues(alpha: 0.15);
         borderColor = Colors.white.withValues(alpha: 0.38);
@@ -49,6 +54,8 @@ class Resposta extends StatelessWidget {
       circuloConteudo = const Icon(Icons.check, color: Colors.white, size: 20);
     } else if (estado == EstadoResposta.errada) {
       circuloConteudo = const Icon(Icons.close, color: Colors.white, size: 20);
+    } else if (estado == EstadoResposta.selecionada) {
+      circuloConteudo = const Icon(Icons.check, color: Colors.white, size: 20);
     } else {
       circuloConteudo = Text(
         letra,
@@ -66,7 +73,9 @@ class Resposta extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: estado == EstadoResposta.normal ? quandoRespondido : null,
+          onTap: (estado == EstadoResposta.normal || estado == EstadoResposta.selecionada)
+              ? quandoRespondido
+              : null,
           borderRadius: BorderRadius.circular(14),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),

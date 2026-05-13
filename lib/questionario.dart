@@ -20,18 +20,27 @@ class Questionario extends StatefulWidget {
 
 class _QuestionarioState extends State<Questionario> {
   int? _respostaSelecionada;
+  bool _confirmada = false;
 
   @override
   void didUpdateWidget(Questionario oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.perguntaSelecionada != widget.perguntaSelecionada) {
-      setState(() => _respostaSelecionada = null);
+      setState(() {
+        _respostaSelecionada = null;
+        _confirmada = false;
+      });
     }
   }
 
   void _selecionarResposta(int indice) {
-    if (_respostaSelecionada != null) return;
+    if (_confirmada) return;
     setState(() => _respostaSelecionada = indice);
+  }
+
+  void _confirmar() {
+    if (_respostaSelecionada == null) return;
+    setState(() => _confirmada = true);
   }
 
   @override
@@ -42,7 +51,7 @@ class _QuestionarioState extends State<Questionario> {
         (perguntas[idx]['respostas'] as List).cast();
 
     bool? acertou;
-    if (_respostaSelecionada != null) {
+    if (_confirmada && _respostaSelecionada != null) {
       acertou = respostas[_respostaSelecionada!]['correta'] as bool;
     }
 
@@ -54,12 +63,14 @@ class _QuestionarioState extends State<Questionario> {
           ...respostas.asMap().entries.map((entry) {
             final eCorreta = entry.value['correta'] as bool;
             EstadoResposta estado = EstadoResposta.normal;
-            if (_respostaSelecionada != null) {
+            if (_confirmada) {
               if (eCorreta) {
                 estado = EstadoResposta.correta;
               } else if (entry.key == _respostaSelecionada) {
                 estado = EstadoResposta.errada;
               }
+            } else if (entry.key == _respostaSelecionada) {
+              estado = EstadoResposta.selecionada;
             }
             return Resposta(
               entry.value['texto'] as String,
@@ -68,8 +79,30 @@ class _QuestionarioState extends State<Questionario> {
               estado: estado,
             );
           }),
-          if (_respostaSelecionada != null) ...[
-            const SizedBox(height: 12),
+          const SizedBox(height: 12),
+          if (!_confirmada && _respostaSelecionada != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _confirmar,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: const Color(0xFF6C63FF),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  child: const Text(
+                    'Confirmar Resposta',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ),
+          if (_confirmada) ...[
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Align(
