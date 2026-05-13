@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 
 class Resultado extends StatelessWidget {
-  final int nota;
+  final int acertos;
+  final int total;
   final void Function() quandoReiniciar;
 
-  const Resultado(this.nota, this.quandoReiniciar, {super.key});
+  const Resultado(this.acertos, this.total, this.quandoReiniciar, {super.key});
 
   String get fraseResultado {
-    if (nota < 8) return 'Pode Melhorar!';
-    if (nota < 12) return 'Bom!';
-    if (nota < 16) return 'Ótimo!';
+    final p = acertos / total;
+    if (p < 0.4) return 'Pode Melhorar!';
+    if (p < 0.6) return 'Bom!';
+    if (p < 0.8) return 'Ótimo!';
     return 'Excelente!';
   }
 
   String get emoji {
-    if (nota < 8) return '😅';
-    if (nota < 12) return '😊';
-    if (nota < 16) return '🎉';
+    final p = acertos / total;
+    if (p < 0.4) return '😅';
+    if (p < 0.6) return '😊';
+    if (p < 0.8) return '🎉';
     return '🏆';
   }
 
@@ -44,10 +47,7 @@ class Resultado extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Text(
-                    emoji,
-                    style: const TextStyle(fontSize: 64),
-                  ),
+                  Text(emoji, style: const TextStyle(fontSize: 64)),
                   const SizedBox(height: 16),
                   Text(
                     fraseResultado,
@@ -59,11 +59,13 @@ class Resultado extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Pontuação: $nota pontos',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
+                    '$acertos de $total corretas',
+                    style: const TextStyle(fontSize: 18, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${((acertos / total) * 100).round()}% de aproveitamento',
+                    style: const TextStyle(fontSize: 14, color: Colors.grey),
                   ),
                 ],
               ),
@@ -84,10 +86,7 @@ class Resultado extends StatelessWidget {
                 ),
                 child: const Text(
                   'Tentar Novamente',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
             ),

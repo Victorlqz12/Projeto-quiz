@@ -13,42 +13,69 @@ class PerguntaApp extends StatefulWidget {
 
 class _PerguntaAppState extends State<PerguntaApp> {
   var perguntaSelecionada = 0;
-  var nota_total = 0;
+  var acertos = 0;
   final perguntas = const [
     {
-      'pergunta': 'Qual é a sua cor favorita?',
+      'pergunta': 'Qual é a capital do Brasil?',
       'respostas': [
-        {'texto': 'Preto', 'nota': 10},
-        {'texto': 'Vermelho', 'nota': 5},
-        {'texto': 'Verde', 'nota': 3},
-        {'texto': 'Branco', 'nota': 1},
+        {'texto': 'São Paulo', 'correta': false},
+        {'texto': 'Brasília', 'correta': true},
+        {'texto': 'Rio de Janeiro', 'correta': false},
+        {'texto': 'Salvador', 'correta': false},
       ],
     },
     {
-      'pergunta': 'Qual é o seu animal favorito?',
+      'pergunta': 'Qual é o maior planeta do Sistema Solar?',
       'respostas': [
-        {'texto': 'Coelho', 'nota': 10},
-        {'texto': 'Tartaruga', 'nota': 5},
-        {'texto': 'Elefante', 'nota': 3},
-        {'texto': 'Leão', 'nota': 1},
+        {'texto': 'Saturno', 'correta': false},
+        {'texto': 'Urano', 'correta': false},
+        {'texto': 'Júpiter', 'correta': true},
+        {'texto': 'Netuno', 'correta': false},
       ],
     },
     {
-      'pergunta': 'Qual seu tipo de alimento favorito?',
+      'pergunta': 'Em que ano o Brasil foi descoberto?',
       'respostas': [
-        {'texto': 'Massas', 'nota': 10},
-        {'texto': 'Carnes', 'nota': 5},
-        {'texto': 'Grãos', 'nota': 3},
-        {'texto': 'Vegetais', 'nota': 1},
+        {'texto': '1492', 'correta': false},
+        {'texto': '1500', 'correta': true},
+        {'texto': '1522', 'correta': false},
+        {'texto': '1488', 'correta': false},
+      ],
+    },
+    {
+      'pergunta': 'Qual é a fórmula química da água?',
+      'respostas': [
+        {'texto': 'CO₂', 'correta': false},
+        {'texto': 'H₂O₂', 'correta': false},
+        {'texto': 'NaCl', 'correta': false},
+        {'texto': 'H₂O', 'correta': true},
+      ],
+    },
+    {
+      'pergunta': 'Quantos estados tem o Brasil?',
+      'respostas': [
+        {'texto': '24', 'correta': false},
+        {'texto': '25', 'correta': false},
+        {'texto': '26', 'correta': true},
+        {'texto': '27', 'correta': false},
+      ],
+    },
+    {
+      'pergunta': 'Qual é o maior oceano do mundo?',
+      'respostas': [
+        {'texto': 'Oceano Atlântico', 'correta': false},
+        {'texto': 'Oceano Índico', 'correta': false},
+        {'texto': 'Oceano Ártico', 'correta': false},
+        {'texto': 'Oceano Pacífico', 'correta': true},
       ],
     },
   ];
 
-  void responder(int nota) {
+  void responder(bool correta) {
     if (temPerguntaSelecionada) {
       setState(() {
         perguntaSelecionada++;
-        nota_total += nota;
+        if (correta) acertos++;
       });
     }
   }
@@ -56,7 +83,7 @@ class _PerguntaAppState extends State<PerguntaApp> {
   void reiniciarQuestionario() {
     setState(() {
       perguntaSelecionada = 0;
-      nota_total = 0;
+      acertos = 0;
     });
   }
 
@@ -133,7 +160,7 @@ class _PerguntaAppState extends State<PerguntaApp> {
                           perguntas: perguntas,
                           responder: responder,
                         )
-                      : Resultado(nota_total, reiniciarQuestionario),
+                      : Resultado(acertos, perguntas.length, reiniciarQuestionario),
                 ),
               ],
             ),
