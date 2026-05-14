@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './resultado.dart';
 import './questionario.dart';
+import './tela_inicial.dart';
 
 void main() => runApp(const PerguntaApp());
 
@@ -12,6 +13,7 @@ class PerguntaApp extends StatefulWidget {
 }
 
 class _PerguntaAppState extends State<PerguntaApp> {
+  var jogoIniciado = false;
   var perguntaSelecionada = 0;
   var acertos = 0;
   final perguntas = const [
@@ -80,8 +82,17 @@ class _PerguntaAppState extends State<PerguntaApp> {
     }
   }
 
+  void iniciarJogo() {
+    setState(() {
+      jogoIniciado = true;
+      perguntaSelecionada = 0;
+      acertos = 0;
+    });
+  }
+
   void reiniciarQuestionario() {
     setState(() {
+      jogoIniciado = false;
       perguntaSelecionada = 0;
       acertos = 0;
     });
@@ -129,7 +140,7 @@ class _PerguntaAppState extends State<PerguntaApp> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      if (temPerguntaSelecionada)
+                      if (jogoIniciado && temPerguntaSelecionada)
                         Text(
                           '${perguntaSelecionada + 1} / ${perguntas.length}',
                           style: const TextStyle(
@@ -140,7 +151,7 @@ class _PerguntaAppState extends State<PerguntaApp> {
                     ],
                   ),
                 ),
-                if (temPerguntaSelecionada)
+                if (jogoIniciado && temPerguntaSelecionada)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: ClipRRect(
@@ -154,13 +165,18 @@ class _PerguntaAppState extends State<PerguntaApp> {
                     ),
                   ),
                 Expanded(
-                  child: temPerguntaSelecionada
-                      ? Questionario(
-                          perguntaSelecionada: perguntaSelecionada,
-                          perguntas: perguntas,
-                          responder: responder,
+                  child: !jogoIniciado
+                      ? TelaInicial(
+                          totalPerguntas: perguntas.length,
+                          aoIniciar: iniciarJogo,
                         )
-                      : Resultado(acertos, perguntas.length, reiniciarQuestionario),
+                      : temPerguntaSelecionada
+                          ? Questionario(
+                              perguntaSelecionada: perguntaSelecionada,
+                              perguntas: perguntas,
+                              responder: responder,
+                            )
+                          : Resultado(acertos, perguntas.length, reiniciarQuestionario),
                 ),
               ],
             ),
